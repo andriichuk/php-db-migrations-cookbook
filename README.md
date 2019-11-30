@@ -2,7 +2,7 @@
 
 In this repository, I have collected the most common examples of working with database migrations. For examples, I will use the syntax for writing migrations from the most popular tools for creating them:
 
-* [Phinx](https://phinx.org/) - [documentation](http://docs.phinx.org/en/latest/) - [package](https://packagist.org/packages/robmorgan/phinx)
+* [Phinx](https://phinx.org/) - [Documentation](http://docs.phinx.org/en/latest/) - [Package](https://packagist.org/packages/robmorgan/phinx)
 * [Laravel Database Migrations](https://laravel.com/docs/master/migrations)
 
 All examples will be accompanied by examples of native [MySQL](https://www.mysql.com/) queries.
@@ -14,6 +14,7 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Dropping a database](#dropping-a-database)
 * [Tables](#tables)
     * [Creating a table](#creating-a-table)
+    * [Renaming a table](#renaming-a-table)
 
 ## Schema
 
@@ -74,7 +75,9 @@ DROP DATABASE IF EXISTS `cookbook`
 **Phinx**
 
 ```php
-$this->dropDatabase('cookbook');
+if ($this->getAdapter()->hasDatabase('cookbook')) {
+    $this->dropDatabase('cookbook');
+}
 ```
 
 **Laravel**
@@ -145,6 +148,28 @@ if (!Schema::hasTable('posts')) {
 
     DB::statement("ALTER TABLE `posts` comment 'Table description'");
 }
+```
+
+## Renaming a table
+
+**MySQL**
+
+```mysql
+ALTER TABLE `posts` RENAME `articles`;
+```
+
+**Phinx**
+
+```php
+$this->getAdapter()->renameTable('posts', 'articles');
+```
+
+**Laravel**
+
+```php
+use Illuminate\Support\Facades\Schema;
+
+Schema::rename('posts', 'articles');
 ```
 
 ## Todo
