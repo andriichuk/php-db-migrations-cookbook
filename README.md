@@ -16,6 +16,9 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Creating a table](#creating-a-table)
     * [Renaming a table](#renaming-a-table)
     * [Dropping a table](#dropping-a-table)
+* [Columns](#columns)
+    * [Adding a column](#adding-a-column)
+        * [Adding an INTEGER column](#adding-an-integer-column)
 
 ## Schema
 
@@ -65,7 +68,7 @@ Schema::connection('mysql')
     ->createDatabase('cookbook');
 ```
 
-## Dropping a database
+### Dropping a database
 
 **MySQL**
 
@@ -151,7 +154,7 @@ if (!Schema::hasTable('posts')) {
 }
 ```
 
-## Renaming a table
+### Renaming a table
 
 **MySQL**
 
@@ -173,7 +176,7 @@ use Illuminate\Support\Facades\Schema;
 Schema::rename('posts', 'articles');
 ```
 
-## Dropping a table
+### Dropping a table
 
 **MySQL**
 
@@ -199,10 +202,37 @@ use Illuminate\Support\Facades\Schema;
 Schema::dropIfExists('articles');
 ```
 
-## Todo
+## Columns
 
-- [x] Schema
-- [ ] Tables
-- [ ] Columns
-- [ ] Indexes
-- [ ] Foreign Keys
+### Adding a column
+
+### Adding an INTEGER column
+
+**MySQL**
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN likes INTEGER
+```
+
+**Phinx**
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('likes')
+            ->setType(MysqlAdapter::PHINX_TYPE_INTEGER)
+    )
+    ->update();
+```
+
+**Laravel**
+
+```php
+Schema::table('posts', function (Blueprint $table) {
+    $table->integer('likes');
+});
+```
