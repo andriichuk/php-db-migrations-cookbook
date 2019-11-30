@@ -15,6 +15,7 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
 * [Tables](#tables)
     * [Creating a table](#creating-a-table)
     * [Renaming a table](#renaming-a-table)
+    * [Dropping a table](#dropping-a-table)
 
 ## Schema
 
@@ -170,6 +171,32 @@ $this->getAdapter()->renameTable('posts', 'articles');
 use Illuminate\Support\Facades\Schema;
 
 Schema::rename('posts', 'articles');
+```
+
+## Dropping a table
+
+**MySQL**
+
+```mysql
+DROP TABLE IF EXISTS `articles`
+```
+
+**Phinx**
+
+```php
+if ($this->hasTable('articles')) {
+    $this->table('articles')
+        ->drop()
+        ->save();
+}
+```
+
+**Laravel**
+
+```php
+use Illuminate\Support\Facades\Schema;
+
+Schema::dropIfExists('articles');
 ```
 
 ## Todo
