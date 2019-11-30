@@ -1,11 +1,15 @@
 # PHP Database Migrations Cookbook
 
-In this repository, I have collected the most common examples of working with database migrations. For examples, I will use the syntax for writing migrations from the most popular tools for creating them:
+In this repository, I have collected the most common receipts of working with database migrations.
+
+Receipts are given for the following libraries/frameworks:
 
 * [Phinx](https://phinx.org/) - [Documentation](http://docs.phinx.org/en/latest/) - [Package](https://packagist.org/packages/robmorgan/phinx)
 * [Laravel Database Migrations](https://laravel.com/docs/master/migrations)
 
-All examples will be accompanied by examples of native [MySQL](https://www.mysql.com/) queries.
+All receipts are accompanied by examples of native [MySQL](https://www.mysql.com/) queries.
+
+`*` Check your database server connection and user permissions executing queries.
 
 ## Table of Contents
 
@@ -29,6 +33,7 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Working with signed columns](#working-with-signed-columns)
     * [Specifying a column character set](#specifying-a-column-character-set)
     * [Specifying a column collation](#specifying-a-column-collation)
+* [TODO](#todo)
 
 ## Schema
 
@@ -72,6 +77,8 @@ php artisan migrate:install --database="pgsql"
 Using migration
 
 ```php
+use Illuminate\Support\Facades\Schema;
+
 Schema::connection('mysql')
     ->getConnection()
     ->getDoctrineSchemaManager()
@@ -80,13 +87,13 @@ Schema::connection('mysql')
 
 ### Dropping a database
 
-**MySQL**
+MySQL
 
 ```mysql
 DROP DATABASE IF EXISTS `cookbook`
 ```
 
-**Phinx**
+Phinx
 
 ```php
 if ($this->getAdapter()->hasDatabase('cookbook')) {
@@ -94,9 +101,11 @@ if ($this->getAdapter()->hasDatabase('cookbook')) {
 }
 ```
 
-**Laravel**
+Laravel
 
 ```php
+use Illuminate\Support\Facades\Schema;
+
 Schema::connection('mysql')
     ->getConnection()
     ->getDoctrineSchemaManager()
@@ -108,11 +117,11 @@ Schema::connection('mysql')
 ### Creating a table
 
 * check if the table is exists
-* add primary column
+* add a primary column
 * specify engine
 * set charset
 * set collation
-* add comment
+* add a comment
 
 **MySQL**
 
@@ -166,19 +175,19 @@ if (!Schema::hasTable('posts')) {
 
 ### Renaming a table
 
-**MySQL**
+MySQL
 
 ```mysql
 ALTER TABLE `posts` RENAME `articles`;
 ```
 
-**Phinx**
+Phinx
 
 ```php
 $this->getAdapter()->renameTable('posts', 'articles');
 ```
 
-**Laravel**
+Laravel
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -188,13 +197,13 @@ Schema::rename('posts', 'articles');
 
 ### Dropping a table
 
-**MySQL**
+MySQL
 
 ```mysql
 DROP TABLE IF EXISTS `articles`
 ```
 
-**Phinx**
+Phinx
 
 ```php
 if ($this->hasTable('articles')) {
@@ -204,7 +213,7 @@ if ($this->hasTable('articles')) {
 }
 ```
 
-**Laravel**
+Laravel
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -216,13 +225,13 @@ Schema::dropIfExists('articles');
 
 ### Adding an INTEGER column
 
-**MySQL**
+MySQL
 
 ```mysql
 ALTER TABLE `posts` ADD COLUMN `likes` INTEGER
 ```
 
-**Phinx**
+Phinx
 
 ```php
 use Phinx\Db\Adapter\MysqlAdapter;
@@ -237,7 +246,7 @@ $this->table('posts')
     ->update();
 ```
 
-**Laravel**
+Laravel
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -584,6 +593,7 @@ Schema::table('posts', function (Blueprint $table) {
     $table->integer('likes')
         ->unsigned();
 
+    // The third argument must be with "true" boolean value
     $table->integer('rating', false, true);
 });
 ```
@@ -659,3 +669,9 @@ Schema::table('posts', function (Blueprint $table) {
         ->collation('utf8mb4_unicode_ci');
 });
 ```
+
+## TODO
+
+* [ ] Indices
+* [ ] Foreign Keys
+* [ ] Additional manipulation with schema|table|column
