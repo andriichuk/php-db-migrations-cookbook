@@ -24,7 +24,7 @@ All recipes are accompanied by examples of native [MySQL](https://www.mysql.com/
     * [Adding an INTEGER column](#adding-an-integer-column)
     * [Adding a TINYINT column](#adding-a-tinyint-column)
     * [Adding a DECIMAL column](#adding-a-decimal-column)
-    * [Adding a ENUM column](#adding-a-enum-column)
+    * [Adding an ENUM column](#adding-an-enum-column)
     * [Adding a BOOLEAN column](#adding-a-boolean-column)
     * [Specifying a column length](#specifying-a-column-length)
     * [Specifying a default value for a column](#specifying-a-default-value-for-a-column)
@@ -326,7 +326,7 @@ Schema::table('products', function (Blueprint $table) {
 });
 ```
 
-### Adding a ENUM column
+### Adding an ENUM column
 
 MySQL
 
