@@ -21,19 +21,22 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
 * set charset
 * set collation
 
-MySQL
+**MySQL**
 
 ```mysql
-CREATE DATABASE IF NOT EXISTS `cookbook` CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`
+CREATE DATABASE IF NOT EXISTS `cookbook` DEFAULT CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`
 ```
 
-Phinx (no special syntax)
+**Phinx**
 
 ```php
-$this->execute('CREATE DATABASE IF NOT EXISTS `cookbook` CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`');
+$this->createDatabase('cookbook', [
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+]);
 ```
 
-Laravel
+**Laravel**
 
 Create database that specified in configuration file (`config/database.php`) (using default connection (`DB_CONNECTION`))
 
@@ -50,12 +53,6 @@ php artisan migrate:install --database="pgsql"
 Using migration
 
 ```php
-DB::statement('CREATE DATABASE IF NOT EXISTS `cookbook` CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`');
-```
-
-Using existing connection
-
-```php
 Schema::connection('mysql')
     ->getConnection()
     ->getDoctrineSchemaManager()
@@ -64,25 +61,19 @@ Schema::connection('mysql')
 
 ## Dropping a database
 
-MySQL
+**MySQL**
 
 ```mysql
 DROP DATABASE IF EXISTS `cookbook`
 ```
 
-Phinx (no special syntax)
+**Phinx**
 
 ```php
-$this->execute('DROP DATABASE IF EXISTS `cookbook`');
+$this->dropDatabase('cookbook');
 ```
 
-Laravel
-
-```php
-DB::statement('DROP DATABASE IF EXISTS `cookbook`');
-```
-
-Using existing connection
+**Laravel**
 
 ```php
 Schema::connection('mysql')
