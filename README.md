@@ -25,6 +25,10 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Specifying a column length](#specifying-a-column-length)
     * [Specifying a default value for a column](#specifying-a-default-value-for-a-column)
     * [Working with nullable columns](#working-with-nullable-columns)
+    * [Specifying a comment for a column](#specifying-a-comment-for-a-column)
+    * [Working with signed columns](#working-with-signed-columns)
+    * [Specifying a column character set](#specifying-a-column-character-set)
+    * [Specifying a column collation](#specifying-a-column-collation)
 
 ## Schema
 
@@ -131,7 +135,7 @@ if (!$this->hasTable('posts')) {
     $this->getAdapter()->createTable(
         new Table('posts', [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
+            'collation' => 'utf8mb4_unicode_ci',
             'comment' => 'Table short description',
             // Primary key options
             'id' => 'id', // Primary key name
@@ -501,5 +505,157 @@ Schema::table('posts', function (Blueprint $table) {
     $table->integer('published_at')
         ->nullable(true);
         // or just ->nullable();
+});
+```
+
+### Specifying a comment for a column
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `likes` INTEGER COMMENT 'Column comment';
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('likes')
+            ->setType(MysqlAdapter::PHINX_TYPE_INTEGER)
+            ->setComment('Column comment')
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->integer('likes')
+        ->comment('Column comment');
+});
+```
+
+### Working with signed columns
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `likes` INTEGER UNSIGNED;
+ALTER TABLE `posts` ADD COLUMN `rating` TINYINT SIGNED;
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('likes')
+            ->setType(MysqlAdapter::PHINX_TYPE_INTEGER)
+            ->setSigned(false) // UNSIGNED
+    )->addColumn(
+        (new Column())
+            ->setName('rating')
+            ->setType(MysqlAdapter::PHINX_TYPE_BOOLEAN)
+            ->setSigned(true) // SIGNED
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->integer('likes')
+        ->unsigned();
+
+    $table->integer('rating', false, true);
+});
+```
+
+### Specifying a column character set
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `content` TEXT CHARACTER SET 'utf8mb4'
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('content')
+            ->setType(MysqlAdapter::PHINX_TYPE_TEXT)
+            ->setEncoding('utf8mb4')
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->text('content')
+        ->charset('utf8mb4');
+});
+```
+
+### Specifying a column collation
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `content` TEXT COLLATE 'utf8mb4_unicode_ci'
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('content')
+            ->setType(MysqlAdapter::PHINX_TYPE_TEXT)
+            ->setCollation('utf8mb4_unicode_ci')
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->text('content')
+        ->collation('utf8mb4_unicode_ci');
 });
 ```
