@@ -17,8 +17,10 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Renaming a table](#renaming-a-table)
     * [Dropping a table](#dropping-a-table)
 * [Columns](#columns)
-    * [Adding a column](#adding-a-column)
-        * [Adding an INTEGER column](#adding-an-integer-column)
+    * [Adding an INTEGER column](#adding-an-integer-column)
+    * [Adding a DECIMAL column](#adding-a-decimal-column)
+    * [Adding a ENUM column](#adding-a-enum-column)
+    * [Specifying a column length](#specifying-a-column-length)
 
 ## Schema
 
@@ -204,14 +206,12 @@ Schema::dropIfExists('articles');
 
 ## Columns
 
-### Adding a column
-
 ### Adding an INTEGER column
 
 **MySQL**
 
 ```mysql
-ALTER TABLE `posts` ADD COLUMN likes INTEGER
+ALTER TABLE `posts` ADD COLUMN `likes` INTEGER
 ```
 
 **Phinx**
@@ -232,7 +232,119 @@ $this->table('posts')
 **Laravel**
 
 ```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
 Schema::table('posts', function (Blueprint $table) {
     $table->integer('likes');
+});
+```
+
+### Adding a DECIMAL column
+
+MySQL
+
+```mysql
+ALTER TABLE `producs` ADD COLUMN `price` DECIMAL(10, 2)
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('producs')
+    ->addColumn(
+        (new Column())
+            ->setName('price')
+            ->setType(MysqlAdapter::PHINX_TYPE_DECIMAL)
+            ->setPrecisionAndScale(10, 2)
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('producs', function (Blueprint $table) {
+    $table->decimal('price', 10, 2);
+});
+```
+
+### Adding a ENUM column
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `status` ENUM("draft", "publish", "private", "trash")
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('status')
+            ->setType(MysqlAdapter::PHINX_TYPE_ENUM)
+            ->setValues([
+                'draft', 'publish', 'private', 'trash',
+            ])
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->enum('status', [
+        'draft', 'publish', 'private', 'trash',
+    ]);
+});
+```
+
+### Specifying a column length
+
+**MySQL**
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `name` VARCHAR(100)
+```
+
+**Phinx**
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('name')
+            ->setType(MysqlAdapter::PHINX_TYPE_STRING)
+            ->setLimit(100)
+    )
+    ->update();
+```
+
+**Laravel**
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->string('name', 100);
 });
 ```
