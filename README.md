@@ -18,9 +18,13 @@ All examples will be accompanied by examples of native [MySQL](https://www.mysql
     * [Dropping a table](#dropping-a-table)
 * [Columns](#columns)
     * [Adding an INTEGER column](#adding-an-integer-column)
+    * [Adding a TINYINT column](#adding-a-tinyint-column)
     * [Adding a DECIMAL column](#adding-a-decimal-column)
     * [Adding a ENUM column](#adding-a-enum-column)
+    * [Adding a BOOLEAN column](#adding-a-boolean-column)
     * [Specifying a column length](#specifying-a-column-length)
+    * [Specifying a default value for a column](#specifying-a-default-value-for-a-column)
+    * [Working with nullable columns](#working-with-nullable-columns)
 
 ## Schema
 
@@ -240,12 +244,12 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-### Adding a DECIMAL column
+### Adding a TINYINT column
 
 MySQL
 
 ```mysql
-ALTER TABLE `producs` ADD COLUMN `price` DECIMAL(10, 2)
+ALTER TABLE `posts` ADD COLUMN `type` TINYINT
 ```
 
 Phinx
@@ -254,7 +258,41 @@ Phinx
 use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Db\Table\Column;
 
-$this->table('producs')
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('type')
+            ->setType(MysqlAdapter::PHINX_TYPE_BOOLEAN)
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->tinyInteger('type');
+});
+```
+
+### Adding a DECIMAL column
+
+MySQL
+
+```mysql
+ALTER TABLE `products` ADD COLUMN `price` DECIMAL(10, 2)
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('products')
     ->addColumn(
         (new Column())
             ->setName('price')
@@ -270,7 +308,7 @@ Laravel
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-Schema::table('producs', function (Blueprint $table) {
+Schema::table('products', function (Blueprint $table) {
     $table->decimal('price', 10, 2);
 });
 ```
@@ -314,15 +352,49 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
+### Adding a BOOLEAN column
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `active` TINYINT(1)
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('active')
+            ->setType(MysqlAdapter::PHINX_TYPE_BOOLEAN)
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->boolean('active');
+});
+```
+
 ### Specifying a column length
 
-**MySQL**
+MySQL
 
 ```mysql
 ALTER TABLE `posts` ADD COLUMN `name` VARCHAR(100)
 ```
 
-**Phinx**
+Phinx
 
 ```php
 use Phinx\Db\Adapter\MysqlAdapter;
@@ -338,7 +410,7 @@ $this->table('posts')
     ->update();
 ```
 
-**Laravel**
+Laravel
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -346,5 +418,88 @@ use Illuminate\Database\Schema\Blueprint;
 
 Schema::table('posts', function (Blueprint $table) {
     $table->string('name', 100);
+});
+```
+
+### Specifying a default value for a column
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `likes` INTEGER DEFAULT 0
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('likes')
+            ->setType(MysqlAdapter::PHINX_TYPE_INTEGER)
+            ->setDefault(0)
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->integer('likes')
+        ->default(0);
+});
+```
+
+### Working with nullable columns
+
+MySQL
+
+```mysql
+ALTER TABLE `posts` ADD COLUMN `likes` INTEGER NOT NULL;
+ALTER TABLE `posts` ADD COLUMN `published_at` TIMESTAMP NULL;
+```
+
+Phinx
+
+```php
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Table\Column;
+
+$this->table('posts')
+    ->addColumn(
+        (new Column())
+            ->setName('likes')
+            ->setType(MysqlAdapter::PHINX_TYPE_INTEGER)
+            ->setDefault(0)
+            ->setNull(false) // NOT NULL
+    )->addColumn(
+        (new Column())
+            ->setName('published_at')
+            ->setType(MysqlAdapter::PHINX_TYPE_TIMESTAMP)
+            ->setNull(true) // NULL
+    )
+    ->update();
+```
+
+Laravel
+
+```php
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->integer('likes')
+        ->nullable(false);
+
+    $table->integer('published_at')
+        ->nullable(true);
+        // or just ->nullable();
 });
 ```
