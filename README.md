@@ -1,13 +1,13 @@
 # PHP Database Migrations Cookbook
 
-In this repository, I have collected the most common receipts of working with database migrations.
+In this repository I will collect the most common recipes for working with database migrations.
 
-Receipts are given for the following libraries/frameworks:
+Recipes are given for the following libraries/frameworks:
 
 * [Phinx](https://phinx.org/) - [Documentation](http://docs.phinx.org/en/latest/) - [Package](https://packagist.org/packages/robmorgan/phinx)
 * [Laravel Database Migrations](https://laravel.com/docs/master/migrations)
 
-All receipts are accompanied by examples of native [MySQL](https://www.mysql.com/) queries.
+All recipes are accompanied by examples of native [MySQL](https://www.mysql.com/) queries.
 
 `*` Check your database server connection and user permissions executing queries.
 
